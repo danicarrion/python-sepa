@@ -1,0 +1,2 @@
+recursive-include sepa/templates *.xml
+recursive-exclude * __pycache__

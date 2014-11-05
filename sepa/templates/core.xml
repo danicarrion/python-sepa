@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <CstmrDrctDbtInitn>
+        <GrpHdr>
+            <MsgId>{{ msg_id }}</MsgId>
+            <CreDtTm>{{ cre_dt_tm }}</CreDtTm>
+            <NbOfTxs>{{ nb_of_txs }}</NbOfTxs>
+            <CtrlSum>{{ ctrl_sum }}</CtrlSum>
+            <InitgPty>
+                <Nm>{{ nm }}</Nm>
+                <Id>
+                    <OrgId>
+                        <Othr>
+                            <Id>{{ vatin }}</Id>
+                        </Othr>
+                    </OrgId>
+                </Id>
+            </InitgPty>
+        </GrpHdr>
+        {% for payment_info in payment_infos %}
+        <PmtInf>
+            <PmtInfId>{{ payment_info.pmt_inf_id }}</PmtInfId>
+            <PmtMtd>{{ payment_info.pmt_mtd }}</PmtMtd>
+            <NbOfTxs>{{ payment_info.nb_of_txs }}</NbOfTxs>
+            <CtrlSum>{{ payment_info.ctrl_sum }}</CtrlSum>
+            <PmtTpInf>
+                <SvcLvl>
+                    <Cd>{{ payment_info.cd__sl }}</Cd>
+                </SvcLvl>
+                <LclInstrm>
+                    <Cd>{{ payment_info.cd__li }}</Cd>
+                </LclInstrm>
+                <SeqTp>{{ payment_info.seq_tp }}</SeqTp>
+            </PmtTpInf>
+            <ReqdColltnDt>{{ payment_info.reqd_colltn_dt }}</ReqdColltnDt>
+            <Cdtr>
+                <Nm>{{ nm }}</Nm>
+            </Cdtr>
+            <CdtrAcct>
+                <Id>
+                    <IBAN>{{ iban }}</IBAN>
+                </Id>
+            </CdtrAcct>
+            <CdtrAgt>
+                <FinInstnId>
+                    <BIC>{{ bic }}</BIC>
+                </FinInstnId>
+            </CdtrAgt>
+            {% for tx_inf in payment_info.transaction_infos %}
+            <DrctDbtTxInf>
+                <PmtId>
+                    <EndToEndId>{{ tx_inf.end_to_end_id }}</EndToEndId>
+                </PmtId>
+                <InstdAmt Ccy="EUR">{{ tx_inf.instd_amt }}</InstdAmt>
+                <DrctDbtTx>
+                    <MndtRltdInf>
+                        <MndtId>{{ tx_inf.mndt_id }}</MndtId>
+                        <DtOfSgntr>{{ tx_inf.dt_of_sgntr }}</DtOfSgntr>
+                    </MndtRltdInf>
+                </DrctDbtTx>
+                <Dbtr>
+                    <Nm>{{ tx_inf.nm }}</Nm>
+                </Dbtr>
+                <DbtrAcct>
+                    <Id>
+                        <IBAN>{{ tx_inf.iban }}</IBAN>
+                    </Id>
+                </DbtrAcct>
+                <RmtInf>
+                    <Ustrd>{{ tx_inf.ustrd }}</Ustrd>
+                </RmtInf>
+            </DrctDbtTxInf>
+            {% endfor %}
+        </PmtInf>
+        {% endfor %}
+    </CstmrDrctDbtInitn>
+</Document>
