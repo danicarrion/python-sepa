@@ -8,10 +8,7 @@ from datetime import datetime
 from jinja2 import Environment, PackageLoader
 
 
-_ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale")).ugettext
-
-print "1", os.path.dirname(os.path.abspath(__file__))
-print "2", os.getcwd()
+_ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale"), ["es"]).ugettext
 
 SEQUENCE_TYPES = ("FRST", "RCUR", "FNAL", "OOFF")
 
