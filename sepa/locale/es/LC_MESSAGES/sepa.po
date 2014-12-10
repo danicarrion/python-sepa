@@ -1,0 +1,56 @@
+# Spanish translations for PACKAGE package.
+# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Daniel Carrión <dani@computados.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-10 11:19+0100\n"
+"PO-Revision-Date: 2014-12-10 11:20+0100\n"
+"Last-Translator: Daniel Carrin <dani@computados.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: sepa/django/fields.py:11 build/lib.linux-i686-2.7/sepa/django/fields.py:11
+msgid "International Bank Account Number"
+msgstr ""
+
+#: sepa/django/validators.py:9
+#: build/lib.linux-i686-2.7/sepa/django/validators.py:9
+#, python-format
+msgid "%s is not an well-formed IBAN"
+msgstr "%s no es un IBAN válido"
+
+#: sepa/debit/core.py:79 build/lib.linux-i686-2.7/sepa/debit/core.py:79
+msgid "There were no invoices to process."
+msgstr "No había ningún recibo para procesar."
+
+#: sepa/debit/core.py:99 build/lib.linux-i686-2.7/sepa/debit/core.py:99
+msgid "Invoice without debtor."
+msgstr "Recibo sin deudor."
+
+#: sepa/debit/core.py:104 build/lib.linux-i686-2.7/sepa/debit/core.py:104
+msgid "Invalid amount."
+msgstr "Cantidad inválida."
+
+#: sepa/debit/core.py:110 build/lib.linux-i686-2.7/sepa/debit/core.py:110
+msgid "Invalid IBAN."
+msgstr "IBAN inválido."
+
+#: sepa/debit/core.py:115 build/lib.linux-i686-2.7/sepa/debit/core.py:115
+msgid "Invalid remittance information."
+msgstr "Información para el remitente inválida."
+
+#: sepa/debit/core.py:120 build/lib.linux-i686-2.7/sepa/debit/core.py:120
+msgid "Invalid mandate reference."
+msgstr "Referencia del mandato inválida."
+
+#: sepa/debit/core.py:125 build/lib.linux-i686-2.7/sepa/debit/core.py:125
+msgid "Invalid mandate's date of signature."
+msgstr "Fecha de firma del mandato inválida."

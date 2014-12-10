@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import gettext
+import os
 import random
 import string
 from datetime import datetime
 from jinja2 import Environment, PackageLoader
 
+
+_ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale")).ugettext
 
 SEQUENCE_TYPES = ("FRST", "RCUR", "FNAL", "OOFF")
 
@@ -46,6 +50,7 @@ def prep_str(original_string):
 class Payment(object):
     total_amount = 0
     total_invoices = 0
+    errors = []
 
     def __init__(self, company, invoices, name_map=None, backend="django"):
         self.company = company
@@ -68,7 +73,7 @@ class Payment(object):
         for model_name in name.split(".")[:-1]:
             model = getattr(model, model_name)
 
-        return getattr(model, name)
+        return getattr(model, name, None)
 
     def append_payment_info(self, invoices, payment_infos, sequence_type):
         if len(invoices) == 0:
@@ -89,16 +94,47 @@ class Payment(object):
         for invoice in invoices:
             transaction_info = {}
 
+            debtor = prep_str(self.get_value(invoice, "debtor"))
+            if not debtor:
+                if self.backend == "django":
+                    self.errors.append("%s: %s" % (invoice.__unicode__(), _("Invoice without debtor.")))
+                else:
+                    self.errors.append(_("Invoice without debtor."))
+                continue
+
             amount = self.get_value(invoice, "amount")
+            if amount is None:
+                self.errors.append(u"%s: %s" % (debtor, _("Invalid amount.")))
+                continue
             total_amount += amount
+
+            iban = self.get_value(invoice, "iban")
+            if not iban:
+                self.errors.append(u"%s: %s" % (debtor, _("Invalid IBAN.")))
+                continue
+
+            remittance_information = prep_str(self.get_value(invoice, "remittance_information"))
+            if not iban:
+                self.errors.append(u"%s: %s" % (debtor, _("Invalid remittance information.")))
+                continue
+
+            mandate_reference = prep_str(self.get_value(invoice, "mandate_reference"))
+            if not iban:
+                self.errors.append(u"%s: %s" % (debtor, _("Invalid mandate reference.")))
+                continue
+
+            mandate_date_of_signature = self.get_value(invoice, "mandate_date_of_signature")
+            if not iban:
+                self.errors.append(u"%s: %s" % (debtor, _("Invalid mandate's date of signature.")))
+                continue
 
             transaction_info["end_to_end_id"] = "".join(random.choice(string.ascii_uppercase + string.digits) for x in range(35))
             transaction_info["instd_amt"] = "%.02f" % amount
-            transaction_info["nm"] = prep_str(self.get_value(invoice, "debtor"))
-            transaction_info["iban"] = self.get_value(invoice, "iban")
-            transaction_info["ustrd"] = prep_str(self.get_value(invoice, "remittance_information"))
-            transaction_info["mndt_id"] = prep_str(self.get_value(invoice, "mandate_reference"))
-            transaction_info["dt_of_sgntr"] = self.get_value(invoice, "mandate_date_of_signature").strftime("%Y-%m-%d")
+            transaction_info["nm"] = debtor
+            transaction_info["iban"] = iban
+            transaction_info["ustrd"] = remittance_information
+            transaction_info["mndt_id"] = mandate_reference
+            transaction_info["dt_of_sgntr"] = mandate_date_of_signature.strftime("%Y-%m-%d")
 
             payment_info["transaction_infos"].append(transaction_info)
             total_invoices += 1
@@ -128,9 +164,26 @@ class Payment(object):
         context["cre_dt_tm"] = self.current_time.strftime("%Y-%m-%dT%H:%M:%S")
         context["ctrl_sum"] = "%.02f" % self.total_amount
         context["nb_of_txs"] = str(self.total_invoices)
-        context["nm"] = prep_str(self.get_value(self.company, "name"))
-        context["vatin"] = prep_str(self.get_value(self.company, "vatin"))
-        context["iban"] = self.get_value(self.company, "iban")
-        context["bic"] = self.get_value(self.company, "bic")
+
+        nm = prep_str(self.get_value(self.company, "name"))
+        if not nm:
+            self.errors.append(_("Invalid company name."))
+
+        vatin = prep_str(self.get_value(self.company, "vatin"))
+        if not vatin:
+            self.errors.append(_("Invalid company VATIN."))
+
+        iban = self.get_value(self.company, "iban")
+        if not iban:
+            self.errors.append(_("Invalid company IBAN."))
+
+        bic = self.get_value(self.company, "bic")
+        if not bic:
+            self.errors.append(_("Invalid company BIC."))
+
+        context["nm"] = nm
+        context["vatin"] = vatin
+        context["iban"] = iban
+        context["bic"] = bic
 
         return self.template.render(**context)

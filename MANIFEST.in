@@ -1,2 +1,3 @@
 recursive-include sepa/templates *.xml
+recursive-include sepa/locale *.mo
 recursive-exclude * __pycache__
