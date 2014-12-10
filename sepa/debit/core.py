@@ -10,6 +10,9 @@ from jinja2 import Environment, PackageLoader
 
 _ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale")).ugettext
 
+print "1", os.path.dirname(os.path.abspath(__file__))
+print "2", os.getcwd()
+
 SEQUENCE_TYPES = ("FRST", "RCUR", "FNAL", "OOFF")
 
 
@@ -152,6 +155,7 @@ class Payment(object):
             return self.invoices.filter(**{self.get_key("sequence_type"): sequence_type})
 
     def render_xml(self):
+        self.errors = []
         context = {}
 
         context["payment_infos"] = []
