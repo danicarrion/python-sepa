@@ -114,17 +114,17 @@ class Payment(object):
                 continue
 
             remittance_information = prep_str(self.get_value(invoice, "remittance_information"))
-            if not iban:
+            if not remittance_information:
                 self.errors.append(u"%s: %s" % (debtor, _("Invalid remittance information.")))
                 continue
 
             mandate_reference = prep_str(self.get_value(invoice, "mandate_reference"))
-            if not iban:
+            if not mandate_reference:
                 self.errors.append(u"%s: %s" % (debtor, _("Invalid mandate reference.")))
                 continue
 
             mandate_date_of_signature = self.get_value(invoice, "mandate_date_of_signature")
-            if not iban:
+            if not mandate_date_of_signature:
                 self.errors.append(u"%s: %s" % (debtor, _("Invalid mandate's date of signature.")))
                 continue
 
@@ -134,7 +134,8 @@ class Payment(object):
             transaction_info["iban"] = iban
             transaction_info["ustrd"] = remittance_information
             transaction_info["mndt_id"] = mandate_reference
-            transaction_info["dt_of_sgntr"] = mandate_date_of_signature.strftime("%Y-%m-%d")
+            if mandate_date_of_signature is not None:
+                transaction_info["dt_of_sgntr"] = mandate_date_of_signature.strftime("%Y-%m-%d")
 
             payment_info["transaction_infos"].append(transaction_info)
             total_invoices += 1
