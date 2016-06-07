@@ -12,6 +12,7 @@ company = Dummy()
 company.name = "TestCompany Ltd."
 company.iban = "LOLIBAN"
 company.bic = "LOLIBIC"
+company.creditor_scheme_id = "ES12004M12345678"
 
 invoices = []
 for i in range(5):
@@ -24,5 +25,5 @@ for i in range(5):
     invoice.remittance_information = "REMINF" + "".join(random.choice(string.ascii_uppercase + string.digits) for x in range(4))
     invoices.append(invoice)
 
-payment = Payment(company, invoices)
+payment = Payment(company, invoices, backend="test")
 print(payment.render_xml())

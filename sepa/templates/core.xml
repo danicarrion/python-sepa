@@ -46,6 +46,18 @@
                     <BIC>{{ bic }}</BIC>
                 </FinInstnId>
             </CdtrAgt>
+            <CdtrSchmeId>
+                <Id>
+                    <PrvtId>
+                        <Othr>
+                            <Id>{{ payment_info.creditor_scheme_id }}</Id>
+                            <SchmeNm>
+                                <Prtry>{{ payment_info.creditor_scheme_property }}</Prtry>
+                            </SchmeNm>
+                        </Othr>
+                    </PrvtId>
+                </Id>
+            </CdtrSchmeId>
             {% for tx_inf in payment_info.transaction_infos %}
             <DrctDbtTxInf>
                 <PmtId>
@@ -58,6 +70,21 @@
                         <DtOfSgntr>{{ tx_inf.dt_of_sgntr }}</DtOfSgntr>
                     </MndtRltdInf>
                 </DrctDbtTx>
+                {% if tx_inf.bic %}
+                <DbtrAgt>
+                    <FinInstnId>
+                        <BIC>{{ tx_inf.bic }}</BIC>
+                    </FinInstnId>
+                </DbtrAgt>
+                {% else %}
+                <DbtrAgt>
+                    <FinInstnId>
+                        <Othr>
+                            <Id>NOTPROVIDED</Id>
+                        </Othr>
+                    </FinInstnId>
+                </DbtrAgt>
+                {% endif %}
                 <Dbtr>
                     <Nm>{{ tx_inf.nm }}</Nm>
                 </Dbtr>

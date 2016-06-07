@@ -86,6 +86,8 @@ class Payment(object):
             "cd__sl": "SEPA",
             "cd__li": "CORE",
             "reqd_colltn_dt": self.current_time.strftime("%Y-%m-%d"),  # Add 2 days?
+            "creditor_scheme_id": self.company.creditor_scheme_id,
+            "creditor_scheme_property": "SEPA",
         }
         total_amount = 0
         total_invoices = 0
@@ -113,6 +115,8 @@ class Payment(object):
                 self.errors.append(u"%s: %s" % (debtor, _("Invalid IBAN.")))
                 continue
 
+            bic = self.get_value(invoice, "bic")
+
             remittance_information = prep_str(self.get_value(invoice, "remittance_information"))
             if not remittance_information:
                 self.errors.append(u"%s: %s" % (debtor, _("Invalid remittance information.")))
@@ -132,6 +136,7 @@ class Payment(object):
             transaction_info["instd_amt"] = "%.02f" % amount
             transaction_info["nm"] = debtor
             transaction_info["iban"] = iban
+            transaction_info["bic"] = bic
             transaction_info["ustrd"] = remittance_information
             transaction_info["mndt_id"] = mandate_reference
             if mandate_date_of_signature is not None:
@@ -151,6 +156,8 @@ class Payment(object):
     def filter_invoices_by_sequence_type(self, sequence_type):
         if self.backend == "django":
             return self.invoices.filter(**{self.get_key("sequence_type"): sequence_type})
+        else:
+            return []
 
     def render_xml(self):
         self.errors = []

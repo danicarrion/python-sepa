@@ -19,7 +19,7 @@ def get_packages(package):
 
 setup(
     name='python-sepa',
-    version='0.0.1.dev5',
+    version='0.0.1.dev6',
     packages=get_packages('sepa'),
     install_requires=[
         'Jinja2',
