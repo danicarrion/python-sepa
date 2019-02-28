@@ -10,5 +10,5 @@ setup(name="python-sepa",
       include_package_data=True,
       url="https://github.com/danicarrion/python-sepa",
       install_requires=['Jinja2'],
-      packages=["sepa"])
+      packages=["sepa"]
 )
