@@ -8,43 +8,37 @@ from datetime import datetime
 from jinja2 import Environment, PackageLoader
 
 
-_ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale"), ["es"]).ugettext
+_ = gettext.translation("sepa", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../locale"), ["es"]).gettext
 
 SEQUENCE_TYPES = ("FRST", "RCUR", "FNAL", "OOFF")
 
 
 def prep_str(original_string):
-    final_string = u""
+    final_string = ""
 
     for char in original_string or "":
-        try:
-            char.decode("ascii")
-        except UnicodeEncodeError:
-            pass
-        else:
-            final_string += char.upper()
-            continue
-
-        if char == u"á" or char == u"Á":
+        if char == "á" or char == "Á":
             final_string += "A"
-        elif char == u"é" or char == u"É":
+        elif char == "é" or char == "É":
             final_string += "E"
-        elif char == u"í" or char == u"Í":
+        elif char == "í" or char == "Í":
             final_string += "I"
-        elif char == u"ó" or char == u"Ó":
+        elif char == "ó" or char == "Ó":
             final_string += "O"
-        elif char == u"ú" or char == u"Ú":
+        elif char == "ú" or char == "Ú":
             final_string += "U"
-        elif char == u"ü" or char == u"Ü":
+        elif char == "ü" or char == "Ü":
             final_string += "U"
-        elif char == u"ñ" or char == u"Ñ":
+        elif char == "ñ" or char == "Ñ":
             final_string += "N"
-        elif char == u"º" or char == u"ª":
+        elif char == "º" or char == "ª":
             continue
         elif char == "ç" or char == "Ç":
             final_string += "C"
+        else:
+            final_string += char.upper()
 
-    return final_string.encode('ascii', errors='replace')
+    return final_string
 
 
 class Payment(object):
@@ -157,7 +151,7 @@ class Payment(object):
         if self.backend == "django":
             return self.invoices.filter(**{self.get_key("sequence_type"): sequence_type})
         else:
-            return []
+            return self.invoices  # ignore sequence_type for testing only (example.py)
 
     def render_xml(self):
         self.errors = []
