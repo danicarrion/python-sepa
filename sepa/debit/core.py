@@ -93,7 +93,7 @@ class Payment(object):
             debtor = prep_str(self.get_value(invoice, "debtor"))
             if not debtor:
                 if self.backend == "django":
-                    self.errors.append("%s: %s" % (invoice.__unicode__(), _("Invoice without debtor.")))
+                    self.errors.append("%s: %s" % (invoice.__str__(), _("Invoice without debtor.")))
                 else:
                     self.errors.append(_("Invoice without debtor."))
                 continue
